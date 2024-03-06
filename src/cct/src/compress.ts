@@ -1,21 +1,21 @@
 export function compressI(data: string) {
-    let solution = ""
+    let solution = "";
     for (let i = 0, extra; i < data.length; i += extra) {
         for (extra = 1; extra + i < data.length && data[i] == data[i + extra]; extra++) {
-            continue
+            continue;
         }
         if (extra > 9) {
-            solution += "9" + data[i]
-            solution += `${extra - 9}` + data[i]
-        } else solution += `${extra}` + data[i]
+            solution += "9" + data[i];
+            solution += `${extra - 9}` + data[i];
+        } else solution += `${extra}` + data[i];
     }
-    return solution
+    return solution;
 }
 
 export function compressII(data: string): string | null {
-    return null
+    return null;
 }
 
 export function compressIII(data: string): string | null {
-    return null
+    return null;
 }

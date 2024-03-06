@@ -1,7 +1,7 @@
-import { NS } from "@ns"
+import { NS } from "@ns";
 
 export async function main(ns: NS) {
-    const bb = ns.bladeburner
+    const bb = ns.bladeburner;
 
-    bb.startAction
+    bb.startAction;
 }

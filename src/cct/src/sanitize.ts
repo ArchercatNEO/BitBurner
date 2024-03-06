@@ -1,3 +1,3 @@
 export function santitize(data): null {
-    return null
+    return null;
 }

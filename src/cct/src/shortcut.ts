@@ -1,3 +1,3 @@
 export function shortcut(data): null {
-    return null
+    return null;
 }
