@@ -8,7 +8,7 @@ export async function main(ns: NS) {
         TB: "Tobbaco"
     };
 
-    corp.createCorporation(name.corp);
+    corp.createCorporation(name.corp, true);
 
-    corp.expandIndustry(name.AG);
+    corp.expandIndustry("Tobacco", "Grassman inc.");
 }

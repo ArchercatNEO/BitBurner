@@ -1,5 +1,4 @@
 import { NS } from "@ns";
-import { paint } from "/functions";
 import { allValidExpressions } from "/cct/src/expressions";
 import { compressI, compressII, compressIII } from "/cct/src/compress";
 import { encryptI, encryptII } from "/cct/src/encrypt";
@@ -17,52 +16,44 @@ import { subarray } from "/cct/src/subarray";
 import { stockI, stockII, stockIII, stockIV } from "/cct/src/stocks";
 import { shortcut } from "/cct/src/shortcut";
 import { sumsI, sumsII } from "/cct/src/sums";
+import { getAllServers } from "/lib/servers";
+import { Dictionary } from "/lib/generics";
 
-export function solve(ns: NS, fileName: string, server: string): void {
+/**
+ * Solve every contract on every server
+ * Use with ns.run.
+ */
+export async function main(ns: NS) {
+    for (const server of getAllServers(ns)) {
+        for (const cct of ns.ls(server, ".cct")) {
+            solve(ns, cct, server);
+        }
+    }
+}
+
+export enum ContractError {
+    NotImplemented,
+    ContractFailed
+}
+
+export function solve(ns: NS, fileName: string, server: string): ContractError | null {
     const contract = ns.codingcontract.getContractType(fileName, server);
     const data = ns.codingcontract.getData(fileName, server);
-    ns.tprint(contract);
     const solution = solved[contract](data);
 
     if (solution === null) {
-        //ns.tprint(contract + " has not been solved and was skipped");
-        return;
-    }
-    //ns.tprint(`Attempting ${solution} for ${contract} on ${server}`);
-    //ns.tprint(ns.codingcontract.attempt(solution, fileName, server));
-}
-
-export function test(ns: NS, cctType: string) {
-    let count = 0;
-
-    for (let i = 0; i < 10; i++) {
-        ns.codingcontract.createDummyContract(cctType);
-        const contract = ns.ls("home", ".cct")[0];
-        const data = ns.codingcontract.getData(contract, "home");
-        const solution = solved[cctType](data);
-
-        if (solution === null) {
-            ns.tprint(`ERROR: ${cctType} is not finished. Ending execution`);
-            ns.ls("home", ".cct").forEach((cct) => ns.rm(cct, "home"));
-            return true;
-        }
-
-        const result = ns.codingcontract.attempt(solution, contract, "home");
-        if (result !== "") count++;
+        return ContractError.NotImplemented;
     }
 
-    const colour = count == 0 ? "red" : count < 10 ? "yellow" : "cyan";
-    ns.tprintf(paint(`${cctType} has been sucsessfully solved ${count}/10 times`, colour));
-    //ns.tprintf("Destroying remaining contracts");
-    ns.ls("home", ".cct").forEach((cct) => ns.rm(cct, "home"));
-    return false;
+    const result = ns.codingcontract.attempt(solution, fileName, server)
+    if (!result) {
+        return ContractError.NotImplemented
+    }
+
+    return null
 }
 
-interface solver {
-    [index: string]: (data: any) => number | string | any[] | null;
-}
-
-const solved: solver = {
+const solved: Dictionary<string, (data: any) => number | string | any[] | null> = {
     "Find Largest Prime Factor": primeFactor,
     "Subarray with Maximum Sum": subarray, // Nulled
     "Total Ways to Sum": sumsI,

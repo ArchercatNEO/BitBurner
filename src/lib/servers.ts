@@ -1,4 +1,5 @@
 import { NS } from "@ns";
+import { Dictionary } from "./generics";
 
 export function getAllServers(ns: NS) {
     const servers = ["home"];
@@ -64,9 +65,6 @@ export function batchCopy(ns: NS, target: string | null = null) {
     }
 }
 
-type Dictionary<TKey extends string | number | symbol, TValue> = {
-    [key in TKey]: TValue;
-};
 
 export function batchCrack(ns: NS, target: string | null = null) {
     const targets = target == null ? getAllServers(ns) : [target];
