@@ -23,8 +23,7 @@ export function getAllServers(ns: NS): string[] {
  */
 export function best(ns: NS): string {
     const valuableServers = getAllServers(ns).filter((s) => Weight(ns, s) > 0);
-    const weighedServers = valuableServers.map((sever) => Weight(ns, sever));
-    return weighedServers.sort((a, b) => b - a)[0];
+    return valuableServers.sort((a, b) => Weight(ns ,b) - Weight(ns, a))[0];
 }
 
 /**
