@@ -1,7 +1,7 @@
-import { NS } from "@ns";
+import { NS, Server } from "@ns";
 import { Dictionary } from "./generics";
 
-export function getAllServers(ns: NS) {
+export function getAllServers(ns: NS): string[] {
     const servers = ["home"];
     const levels = [0];
     for (let i = 0; i < servers.length; i++) {
@@ -21,7 +21,7 @@ export function getAllServers(ns: NS) {
 /**
  * Returns the best server that can be hacked
  */
-export function best(ns: NS) {
+export function best(ns: NS): string {
     const valuableServers = getAllServers(ns).filter((s) => Weight(ns, s) > 0);
     const weighedServers = valuableServers.map((sever) => Weight(ns, sever));
     return weighedServers.sort((a, b) => b - a)[0];
