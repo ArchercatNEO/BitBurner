@@ -1,32 +1,23 @@
 import { NS } from "@ns";
-import { getAllServers, findRam } from "functions";
+import { findRam } from "/lib/ram";
 
 export async function main(ns: NS) {
-    let servers = getAllServers(ns).map((a) => ns.getServer(a));
-    let hosts = servers.filter((a) => a.backdoorInstalled);
-    let targets = servers.filter((a) => !a.backdoorInstalled);
-    targets = targets.filter(
-        (a) => a.hasAdminRights && a.requiredHackingSkill < ns.getPlayer().skills.hacking
-    );
+    dfs(ns, "home", "home")
+}
 
-    for (let server of targets.map((a) => a.hostname)) {
-        let path = [server];
-        let connected = ns.scan(server);
-
-        while (connected.some((a) => hosts.indexOf(a) < 0)) {
-            let step = connected[0];
-            path.unshift(step);
-            connected = ns.scan(step);
-        }
-        path.unshift(connected.find((a) => hosts.include(a))[0]);
-
-        for (let step of path) {
-            ns.singularity.connect(step);
-        }
-
-        ns.exec("backdoor.js", findRam(ns));
-        await ns.sleep(0);
+function dfs(ns: NS, server: string, origin: string) {
+    ns.singularity.connect(server);
+    
+    const host = findRam(ns);
+    const info = ns.getServer(server);
+    if (!info.backdoorInstalled) {
+        ns.exec("workers/backdoor.js", host)
+    }
+    
+    for (const connected of ns.scan(server)) {
+        if (connected == origin) { continue; }
+        dfs(ns, connected, server)
     }
 
-    ns.singularity.connect("home");
+    ns.singularity.connect(origin);
 }

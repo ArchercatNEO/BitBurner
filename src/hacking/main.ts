@@ -1,6 +1,7 @@
 import { NS, Server } from "@ns";
-import { best, findRam, shotgun, paint } from "/functions";
 import { execGrow, execHack, execWeaken } from "/workers/main";
+import { batchCopy, batchCrack, best } from "/lib/servers";
+import { findRam } from "/lib/ram";
 
 export async function main(ns: NS) {
     ns.tail();
@@ -8,7 +9,8 @@ export async function main(ns: NS) {
     ns.enableLog("print");
     ns.clearLog();
 
-    shotgun(ns);
+    batchCopy(ns)
+    batchCrack(ns)
 
     const spacer = 100; //ms
     const hackPercent = 0.01;
