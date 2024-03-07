@@ -1,5 +1,5 @@
 import { NS } from "@ns";
-import { findRam } from "/functions";
+import { findRam } from "lib/ram";
 
 /**
  * Wrapper around exec to strongly type parameters

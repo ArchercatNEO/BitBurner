@@ -1,5 +1,5 @@
 import { NS } from "@ns";
-import { paint } from "functions.js";
+import { paint } from "/lib/logger";
 
 export async function main(ns: NS) {
     let time = Date.now();
