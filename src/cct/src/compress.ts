@@ -1,4 +1,4 @@
-export function compressI(data: string) {
+export function compressI(data: string): string {
     let solution = "";
     for (let i = 0, extra; i < data.length; i += extra) {
         for (extra = 1; extra + i < data.length && data[i] == data[i + extra]; extra++) {

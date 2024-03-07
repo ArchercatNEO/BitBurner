@@ -1,4 +1,4 @@
-export function overlap(data: number[][]): null {
+export function overlap(data: number[][]): number[][] | null {
     return null;
     data.sort((a, b) => a[0] - b[0]);
     for (let i = 0; data[i] != null; i++) {

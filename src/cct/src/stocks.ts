@@ -1,9 +1,9 @@
 export function stockI(data: number[]) {
     return null;
-    let sales = [];
+    const sales = [];
     let stock = 0;
     for (let day = 0; day < data.length; day = stock + 1) {
-        let sale = [];
+        const sale = [];
         for (let sign = 1; sign > -2; sign -= 2) {
             while (sign * data[stock] > sign * data[stock + 1]) {
                 stock++;
@@ -31,10 +31,10 @@ export function stockI(data: number[]) {
 
 export function stockII(data: number[]) {
     return null;
-    let sales = [];
+    const sales = [];
     let stock = 0;
     for (let day = 0; day < data.length; day = stock + 1) {
-        let sale = [];
+        const sale = [];
         for (let sign = 1; sign > -2; sign -= 2) {
             while (sign * data[stock] > sign * data[stock + 1]) {
                 stock++;
@@ -45,7 +45,7 @@ export function stockII(data: number[]) {
         sales.push(sale);
     }
     let total = 0;
-    for (let i of sales.map((a) => a[2])) {
+    for (const i of sales.map((a) => a[2])) {
         total += i;
     }
     return total;

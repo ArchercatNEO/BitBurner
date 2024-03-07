@@ -31,8 +31,7 @@ export function jumpIII(data: number[]): number {
 }
 
 export function jumpI(data: number[]): number | null {
-    return 10;
-    debugger;
+    return null;
     // Where we are and how far we can go
     let index = 0;
     let distance = data[0];
@@ -58,7 +57,7 @@ export function jumpI(data: number[]): number | null {
 }
 
 export function jumpII(data: number[]): number | null {
-    return 10;
+    return null;
 
     // Where we are and how far we can go
     let index = 0;

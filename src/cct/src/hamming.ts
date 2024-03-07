@@ -2,21 +2,16 @@ export function hamming(data: number): string | null {
     return null;
 }
 
-export function unHamming(data: string): string {
-    let solution = 0;
-    for (let i = 0; i < data.length; i++) {
-        if (data[i] == 1) {
-            solution ^= i;
-        }
+export function unHamming(data: string): string | null {
+    return null;
+
+    const bitSize = Math.ceil(Math.log2(data.length))
+    const number = parseInt(data, 2);
+
+    let parity = 0
+    for (let i = 1; i < bitSize; i++) {
+        parity ^= number & (1 << i);
     }
-    data = [...data].map(parseInt);
-    data[solution] ^= 1;
-    solution = "";
-    for (let i = 1; i < data.length; i++) {
-        if (Number.isInteger(Math.log2(i))) {
-            continue;
-        }
-        solution += data[i].toString();
-    }
-    return parseInt(solution, 2).toString();
+    
+    return number.toString(2);
 }
