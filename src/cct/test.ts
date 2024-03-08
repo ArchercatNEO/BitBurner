@@ -25,8 +25,8 @@ export async function main(ns: NS) {
             }
         }
 
-        const colour = failed == 0 ? "red" : failed < 10 ? "yellow" : "cyan";
-        ns.tprintf(paint(`${cctType} has been sucsessfully solved ${failed}/10 times`, colour));
+        const colour = failed > 5 ? "red" : failed > 0  ? "yellow" : "cyan";
+        ns.tprintf(paint(`${cctType} has been sucsessfully solved ${10 - failed}/10 times`, colour));
         await ns.sleep(1000);
     }
 }

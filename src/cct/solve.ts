@@ -25,7 +25,14 @@ import { Dictionary } from "/lib/generics";
  */
 export async function main(ns: NS) {
     for (const server of getAllServers(ns)) {
-        for (const cct of ns.ls(server, ".cct")) {
+        const contracts = ns.ls(server, ".cct")
+        ns.tprint(`Solving [${contracts.length}] contracts on [${server}]`)
+        await ns.sleep(10)
+        
+        for (const cct of contracts) {
+            const type = ns.codingcontract.getContractType(cct, server);
+            ns.tprint(`Solving ${type}`)
+            
             solve(ns, cct, server);
         }
     }
@@ -47,7 +54,7 @@ export function solve(ns: NS, fileName: string, server: string): ContractError |
 
     const result = ns.codingcontract.attempt(solution, fileName, server);
     if (!result) {
-        return ContractError.NotImplemented;
+        return ContractError.ContractFailed;
     }
 
     return null;

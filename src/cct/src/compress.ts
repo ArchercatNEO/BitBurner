@@ -1,3 +1,4 @@
+//? 10/10 Tests pass
 export function compressI(data: string): string {
     let solution = "";
     for (let i = 0, extra; i < data.length; i += extra) {
