@@ -5,7 +5,7 @@ import { paint } from "/lib/logger";
 export async function main(ns: NS) {
     //Clear all contracts before attempting tests
     ns.ls("home", ".cct").forEach((cct) => solve(ns, cct, "home"));
-    
+
     contract: for (const cctType of ns.codingcontract.getContractTypes()) {
         let failed = 0;
 
@@ -16,11 +16,11 @@ export async function main(ns: NS) {
             if (solution === ContractError.NotImplemented) {
                 ns.tprint(`ERROR: ${cctType} is not finished, skipping tests`);
                 ns.rm(contract);
-                continue contract
+                continue contract;
             }
 
             if (solution === ContractError.ContractFailed) {
-                ns.rm(contract)
+                ns.rm(contract);
                 failed++;
             }
         }

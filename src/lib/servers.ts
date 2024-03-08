@@ -23,7 +23,7 @@ export function getAllServers(ns: NS): string[] {
  */
 export function best(ns: NS): string {
     const valuableServers = getAllServers(ns).filter((s) => Weight(ns, s) > 0);
-    return valuableServers.sort((a, b) => Weight(ns ,b) - Weight(ns, a))[0];
+    return valuableServers.sort((a, b) => Weight(ns, b) - Weight(ns, a))[0];
 }
 
 /**
@@ -63,7 +63,6 @@ export function batchCopy(ns: NS, target: string | null = null) {
         ns.scp(lib, target, "home");
     }
 }
-
 
 export function batchCrack(ns: NS, target: string | null = null) {
     const targets = target == null ? getAllServers(ns) : [target];

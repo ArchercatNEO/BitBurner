@@ -9,8 +9,8 @@ export async function main(ns: NS) {
     ns.enableLog("print");
     ns.clearLog();
 
-    batchCopy(ns)
-    batchCrack(ns)
+    batchCopy(ns);
+    batchCrack(ns);
 
     const spacer = 100; //ms
     const hackPercent = 0.01;

@@ -45,12 +45,12 @@ export function solve(ns: NS, fileName: string, server: string): ContractError |
         return ContractError.NotImplemented;
     }
 
-    const result = ns.codingcontract.attempt(solution, fileName, server)
+    const result = ns.codingcontract.attempt(solution, fileName, server);
     if (!result) {
-        return ContractError.NotImplemented
+        return ContractError.NotImplemented;
     }
 
-    return null
+    return null;
 }
 
 const solved: Dictionary<string, (data: any) => number | string | any[] | null> = {

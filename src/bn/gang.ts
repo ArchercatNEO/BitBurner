@@ -35,7 +35,9 @@ export async function main(ns: NS) {
         "Hydroflame"
     ];
     //Fill up the last of the name list
-    for (let stamp = gangNames.length; stamp < 12; stamp++) { gangNames.push(`Lakey #${stamp}`); }
+    for (let stamp = gangNames.length; stamp < 12; stamp++) {
+        gangNames.push(`Lakey #${stamp}`);
+    }
 
     //set up constant lists of equipment to buy later
     const everything = gang.getEquipmentNames();
@@ -48,7 +50,7 @@ export async function main(ns: NS) {
     while (true) {
         const members = gang.getMemberNames();
         const snake = gang.getGangInformation();
-        
+
         //Fill up on members
         while (gang.canRecruitMember()) {
             //get the first name in the list we haven't used already
@@ -61,9 +63,15 @@ export async function main(ns: NS) {
         //Ascend everyone
         for (const name of members) {
             const result = gang.getAscensionResult(name);
-            if (result === undefined) { return; }
-            if (result.str > calculateAscendTreshold(name)) { return; }
-            if (gang.getMemberInformation(name).task != "Territory Warfare") { return; }
+            if (result === undefined) {
+                return;
+            }
+            if (result.str > calculateAscendTreshold(name)) {
+                return;
+            }
+            if (gang.getMemberInformation(name).task != "Territory Warfare") {
+                return;
+            }
             gang.ascendMember(name);
         }
 
@@ -80,37 +88,45 @@ export async function main(ns: NS) {
         const needsMoney = !ns.isRunning("batcher.js") && !ns.isRunning("corp.js");
         for (const name in members) {
             const member = gang.getMemberInformation(name);
-            
+
             const goal: (task: string) => number = (task) => {
                 const stats = ns.gang.getTaskStats(task);
-                
+
                 //If the member is not ready do not use them
-                if (task == "Train Combat" && member.str < trainLimit) {return 1;}
-                
+                if (task == "Train Combat" && member.str < trainLimit) {
+                    return 1;
+                }
+
                 //Warfare
                 //TODO Activate territory warfare on some condition
                 if (members.length > warfareMemReq && snake.territory < 1) {
-                    if (member.str > warfareStatReq && task === "Territory Warfare") { return 1; }
+                    if (member.str > warfareStatReq && task === "Territory Warfare") {
+                        return 1;
+                    }
                     return respectGain(snake, member, stats);
-                } 
-                
+                }
+
                 //Penalty, we check for training because other tasks raise penalty
                 //TODO use formulas to check penalty drop/gain
                 if (snake.wantedPenalty < wantedThresh) {
-                    if (task == "Vigilante Justice" && member.str > penaltyStatReq) {return 1;}
-                    if (task == "Train Combat") {return 1;}
+                    if (task == "Vigilante Justice" && member.str > penaltyStatReq) {
+                        return 1;
+                    }
+                    if (task == "Train Combat") {
+                        return 1;
+                    }
                     return 0;
-                }  
-                
+                }
+
                 //Money
-                if (needsMoney || (snake.respect > respectThresh)) {
-                    return moneyGain(snake, member, stats)
-                }  
+                if (needsMoney || snake.respect > respectThresh) {
+                    return moneyGain(snake, member, stats);
+                }
 
                 //Respect
                 return respectGain(snake, member, stats);
             };
-    
+
             //set tasks
             const bestTask = plans.reduce(
                 (current, next) => (goal(current) > goal(next) ? current : next),
@@ -145,7 +161,7 @@ export async function main(ns: NS) {
     /** Wrapper around ns.formulas with hardcoded logic as a backup */
     function moneyGain(gang: GangGenInfo, member: GangMemberInfo, task: GangTaskStats): number {
         if (ns.fileExists("Formulas.exe")) {
-            return ns.formulas.gang.moneyGain(gang, member, task)
+            return ns.formulas.gang.moneyGain(gang, member, task);
         }
 
         if (task.baseMoney === 0 || task.territory == undefined) return 0;

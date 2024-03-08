@@ -1,6 +1,6 @@
 export function mapPathI(data: [number, number]): number {
     const total = data[0] + data[1] - 2;
-    
+
     return factorial(total) / (factorial(total - data[0] + 1) * factorial(data[0] - 1));
 }
 
