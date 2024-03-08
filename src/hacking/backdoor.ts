@@ -1,7 +1,10 @@
 import { NS } from "@ns";
 import { findRam } from "/lib/ram";
+import { batchCopy, batchCrack } from "/lib/servers";
 
 export async function main(ns: NS) {
+    batchCopy(ns);
+    batchCrack(ns);
     dfs(ns, "home", "home");
 }
 

@@ -1,4 +1,4 @@
-import { NS, Server } from "@ns";
+import { NS } from "@ns";
 import { Dictionary } from "./generics";
 
 export function getAllServers(ns: NS): string[] {
@@ -67,7 +67,11 @@ export function batchCopy(ns: NS, target: string | null = null) {
 export function batchCrack(ns: NS, target: string | null = null) {
     const targets = target == null ? getAllServers(ns) : [target];
     const scripts: Dictionary<string, (server: string) => void> = {
-        "BruteSSH.exe": ns.brutessh
+        "BruteSSH.exe": ns.brutessh,
+        "FTPCrack.exe": ns.ftpcrack,
+        "HTTPWorm.exe": ns.httpworm,
+        "SQLInject.exe": ns.sqlinject,
+        "relaySMTP.exe": ns.relaysmtp
     };
 
     const missing = new Set<string>();
@@ -81,12 +85,16 @@ export function batchCrack(ns: NS, target: string | null = null) {
             }
         }
 
-        ns.nuke(target);
-        if (!ns.hasRootAccess(target)) {
-            ignored++;
+        try {
+            ns.nuke(target);
+        } finally {
+            if (!ns.hasRootAccess(target)) {
+                ignored++;
+            }
         }
-
-        ns.tprint(`${ignored} servers have not been nuked`);
-        ns.tprint(`${missing} have not been found`);
     }
+
+    const formater = JSON.stringify(missing);
+    ns.tprint(`${ignored} servers have not been nuked`);
+    ns.tprint(`${formater} have not been found`);
 }

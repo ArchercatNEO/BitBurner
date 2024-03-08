@@ -1,8 +1,9 @@
 import { NS, Server } from "@ns";
 import { execGrow, execHack, execWeaken } from "/workers/main";
 import { batchCopy, batchCrack, best } from "/lib/servers";
-import { findRam } from "/lib/ram";
+import { getMaxThreads, mallocMax } from "/lib/ram";
 
+//TODO Use react for displays
 export async function main(ns: NS) {
     ns.tail();
     ns.disableLog("ALL");
@@ -16,13 +17,10 @@ export async function main(ns: NS) {
     const hackPercent = 0.01;
 
     const target = ns.getServer(best(ns));
-    await ns.sleep(1000);
     prep(ns, target);
 }
 
 function prep(ns: NS, server: Server) {
-    // eslint-disable-next-line no-debugger
-    debugger;
     const {
         minDifficulty: minSec,
         hackDifficulty: security,
@@ -30,32 +28,30 @@ function prep(ns: NS, server: Server) {
         moneyAvailable: cash
     } = server;
 
-    if (!minSec || !security || !maxCash || !cash) return;
+    if (!minSec || !security || !maxCash || !cash) {
+        return;
+    }
 
-    const weakenCost = ns.getScriptRam("/workers/weaken.js");
     const player = ns.getPlayer();
     const weakenTime = ns.formulas.hacking.weakenTime(server, player);
-    let id = 0;
 
-    let weakenThreads = Math.ceil((security - minSec) * 20);
-    while (biggestRam(ns) > weakenCost && weakenThreads > 0 && id < 10) {
-        weakenThreads -= execWeaken(ns, server.hostname, weakenTime, weakenThreads, id);
-        id++;
-    }
+    const weakenHost = mallocMax(ns);
+    const weakenHostThreads = getMaxThreads(ns, weakenHost, "/workers/weaken.js");
+    const weakenTargetTheads = Math.ceil((security - minSec) * 20);
+    const weakenThreads = Math.min(weakenHostThreads, weakenTargetTheads);
+    execWeaken(ns, weakenHost.hostname, weakenThreads, server.hostname, weakenTime, 0);
 
-    const growThreads = solveGrow(ns, cash, maxCash, server);
-    const usedGrowThreads = execGrow(ns, server.hostname, weakenTime, growThreads, id);
-    id++;
+    const growHost = mallocMax(ns);
+    const growHostThreads = getMaxThreads(ns, growHost, "/workers/grow.js");
+    const growTargetThreads = solveGrow(ns, cash, maxCash, server);
+    const growThreads = Math.min(growHostThreads, growTargetThreads);
+    execGrow(ns, growHost.hostname, growThreads, server.hostname, weakenTime, 1);
 
-    let growWeakenThreads = Math.ceil(ns.growthAnalyzeSecurity(usedGrowThreads) * 20);
-    while (biggestRam(ns) > weakenCost && growWeakenThreads > 0 && id < 10) {
-        growWeakenThreads -= execWeaken(ns, server.hostname, weakenTime, growWeakenThreads, id);
-        id++;
-    }
-}
-
-function ram(server: Server): number {
-    return server.maxRam - server.ramUsed;
+    const weakenGrowHost = mallocMax(ns);
+    const weakenGrowHostThreads = getMaxThreads(ns, weakenGrowHost, "/workers/weaken.js");
+    const weakenGrowTargetThreads = Math.ceil(ns.growthAnalyzeSecurity(growThreads) * 20);
+    const weakenGrowThreads = Math.min(weakenGrowHostThreads, weakenGrowTargetThreads);
+    execWeaken(ns, weakenGrowHost.hostname, weakenGrowThreads, server.hostname, weakenTime, 2);
 }
 
 //xsinx
@@ -74,8 +70,4 @@ function solveGrow(ns: NS, money_lo: number, money_hi: number, server: Server) {
         prev = threads;
     }
     return Math.ceil(Math.max(threads, prev, 0));
-}
-
-function biggestRam(ns: NS): number {
-    return ram(ns.getServer(findRam(ns)));
 }

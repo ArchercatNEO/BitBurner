@@ -19,15 +19,15 @@ export function execHack(ns: NS, threads: number, target: string, weakenTime: nu
 /**
  * Wrapper around exec to strongly type parameters
  */
-export function execGrow(ns: NS, target: string, weakenTime: number, threads: number, id: number) {
-    const usedRam = ns.getServerUsedRam(findRam(ns));
-    const maxRam = ns.getServerMaxRam(findRam(ns));
-    const avalibleThreads = (maxRam - usedRam) / ns.getScriptRam("/workers/grow.js");
-    const lowerThreads = Math.min(avalibleThreads, threads);
-    const usedThreads = Math.floor(lowerThreads);
-    if (usedThreads > 0)
-        ns.exec("/workers/grow.js", findRam(ns), usedThreads, weakenTime, target, id);
-    return usedThreads;
+export function execGrow(
+    ns: NS,
+    host: string,
+    threads: number,
+    target: string,
+    weakenTime: number,
+    id: number
+) {
+    ns.exec("/workers/grow.js", host, threads, target, weakenTime, id);
 }
 
 /**
@@ -35,17 +35,11 @@ export function execGrow(ns: NS, target: string, weakenTime: number, threads: nu
  */
 export function execWeaken(
     ns: NS,
+    host: string,
+    threads: number,
     target: string,
     weakenTime: number,
-    threads: number,
     id: number
 ) {
-    const usedRam = ns.getServerUsedRam(findRam(ns));
-    const maxRam = ns.getServerMaxRam(findRam(ns));
-    const avalibleThreads = (maxRam - usedRam) / ns.getScriptRam("/workers/weaken.js");
-    const lowerThreads = Math.min(avalibleThreads, threads);
-    const usedThreads = Math.floor(lowerThreads);
-    if (usedThreads > 0)
-        ns.exec("/workers/weaken.js", findRam(ns), usedThreads, weakenTime, target, id);
-    return usedThreads;
+    ns.exec("/workers/weaken.js", host, threads, weakenTime, target, id);
 }
