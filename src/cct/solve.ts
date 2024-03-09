@@ -17,7 +17,6 @@ import { stockI, stockII, stockIII, stockIV } from "/cct/src/stocks";
 import { shortcut } from "/cct/src/shortcut";
 import { sumsI, sumsII } from "/cct/src/sums";
 import { getAllServers } from "/lib/servers";
-import { Dictionary } from "/lib/generics";
 
 /**
  * Solve every contract on every server
@@ -46,7 +45,7 @@ export enum ContractError {
 export function solve(ns: NS, fileName: string, server: string): ContractError | null {
     const contract = ns.codingcontract.getContractType(fileName, server);
     const data = ns.codingcontract.getData(fileName, server);
-    const solution = solved[contract](data);
+    const solution = solveContract(contract, data);
 
     if (solution === null) {
         return ContractError.NotImplemented;
@@ -60,32 +59,35 @@ export function solve(ns: NS, fileName: string, server: string): ContractError |
     return null;
 }
 
-const solved: Dictionary<string, (data: any) => number | string | any[] | null> = {
-    "Find Largest Prime Factor": primeFactor,
-    "Subarray with Maximum Sum": subarray, // Nulled
-    "Total Ways to Sum": sumsI,
-    "Total Ways to Sum II": sumsII,
-    "Spiralize Matrix": spiralize, //nulled
-    "Array Jumping Game": jumpI,
-    "Array Jumping Game II": jumpII,
-    "Merge Overlapping Intervals": overlap,
-    "Generate IP Addresses": ipify, //nulled
-    "Algorithmic Stock Trader I": stockI,
-    "Algorithmic Stock Trader II": stockII,
-    "Algorithmic Stock Trader III": stockIII, //nulled
-    "Algorithmic Stock Trader IV": stockIV, //nulled
-    "Minimum Path Sum in a Triangle": triangleMap,
-    "Unique Paths in a Grid I": mapPathI,
-    "Unique Paths in a Grid II": mapPathII, //nulled
-    "Shortest Path in a Grid": shortcut, //nulled
-    "Sanitize Parentheses in Expression": santitize, //nulled
-    "Find All Valid Math Expressions": allValidExpressions,
-    "HammingCodes: Integer to Encoded Binary": hamming, //nulled
-    "HammingCodes: Encoded Binary to Integer": unHamming,
-    "Proper 2-Coloring of a Graph": link, //nulled
-    "Compression I: RLE Compression": compressI,
-    "Compression II: LZ Decompression": compressII, //nulled
-    "Compression III: LZ Compression": compressIII, //nulled
-    "Encryption I: Caesar Cipher": encryptI,
-    "Encryption II: Vigenère Cipher": encryptII
-};
+function solveContract(type: string, data: any): number | string | any[] | null {
+    switch (type) {
+        case "Find Largest Prime Factor": return primeFactor(data)
+        case "Subarray with Maximum Sum": return subarray(data)
+        case "Total Ways to Sum": return sumsI(data)
+        case "Total Ways to Sum II": return sumsII(data)
+        case "Spiralize Matrix": return spiralize(data) //nulled
+        case "Array Jumping Game": return jumpI(data)
+        case "Array Jumping Game II": return jumpII(data)
+        case "Merge Overlapping Intervals": return overlap(data)    
+        case "Generate IP Addresses": return ipify(data) //nulled
+        case "Algorithmic Stock Trader I": return stockI(data)
+        case "Algorithmic Stock Trader II": return stockII(data)
+        case "Algorithmic Stock Trader III": return stockIII(data) //nulled
+        case "Algorithmic Stock Trader IV": return stockIV(data) //nulled
+        case "Minimum Path Sum in a Triangle": return triangleMap(data)
+        case "Unique Paths in a Grid I": return mapPathI(data)
+        case "Unique Paths in a Grid II": return mapPathII(data) //nulled
+        case "Shortest Path in a Grid": return shortcut(data) //nulled
+        case "Sanitize Parentheses in Expression": return santitize(data)//nulled
+        case "Find All Valid Math Expressions": return allValidExpressions(data)    
+        case "HammingCodes: Integer to Encoded Binary": return hamming(data) //nulled
+        case "HammingCodes: Encoded Binary to Integer": return unHamming(data)
+        case "Proper 2-Coloring of a Graph": return link(data)//nulled
+        case "Compression I: RLE Compression": return compressI(data)    
+        case "Compression II: LZ Decompression": return compressII(data)//nulled
+        case "Compression III: LZ Compression": return compressIII(data)//nulled
+        case "Encryption I: Caesar Cipher":   return encryptI(data)    
+        case "Encryption II: Vigenère Cipher":  return encryptII(data)
+        default: throw new Error("Unkown contract type")
+    }
+}

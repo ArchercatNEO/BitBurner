@@ -1,5 +1,4 @@
 import { NS } from "@ns";
-import { Dictionary } from "./generics";
 
 export function getAllServers(ns: NS): string[] {
     const servers = ["home"];
@@ -66,13 +65,13 @@ export function batchCopy(ns: NS, target: string | null = null) {
 
 export function batchCrack(ns: NS, target: string | null = null) {
     const targets = target == null ? getAllServers(ns) : [target];
-    const scripts: Dictionary<string, (server: string) => void> = {
-        "BruteSSH.exe": ns.brutessh,
-        "FTPCrack.exe": ns.ftpcrack,
-        "HTTPWorm.exe": ns.httpworm,
-        "SQLInject.exe": ns.sqlinject,
-        "relaySMTP.exe": ns.relaysmtp
-    };
+    const scripts: Map<string, (server: string) => void> = new Map([
+        ["BruteSSH.exe", ns.brutessh],
+        ["FTPCrack.exe", ns.ftpcrack],
+        ["HTTPWorm.exe", ns.httpworm],
+        ["SQLInject.exe", ns.sqlinject],
+        ["relaySMTP.exe", ns.relaysmtp],
+    ])
 
     const missing = new Set<string>();
     let ignored = 0;
