@@ -24,6 +24,21 @@ export function malloc(ns: NS, script: string, threads = 1): Server | null {
     return list[0];
 }
 
+export function mallocThreads(ns: NS, script: string, threads: number): ThreadReturn {
+    const scriptHost = mallocMax(ns);
+    const scriptHostThreads = getRam(scriptHost) / ns.getScriptRam(script)
+    const scriptThreads = Math.min(scriptHostThreads, threads);
+    const rounded = Math.floor(scriptThreads)
+    return new ThreadReturn(scriptHost.hostname, rounded)
+}
+
+class ThreadReturn {
+    constructor(
+        public host: string,
+        public threads: number
+    ) {}
+}
+
 /** Return the server with the most avalible memory regardless of wanted size */
 export function mallocMax(ns: NS): Server {
     let list = getAllServers(ns).map((name) => ns.getServer(name));
@@ -31,6 +46,7 @@ export function mallocMax(ns: NS): Server {
     list = list.sort((a, b) => getRam(b) - getRam(a));
     return list[0];
 }
+
 
 export function getRam(server: Server): number {
     return server.maxRam - server.ramUsed;
